@@ -5,7 +5,8 @@ The following parameters are used to configure the plugin:
 - **user** - user to log in as on the remote machines, defaults to `root`
 - **key** - private SSH key for the remote machines
 - **hosts** - hostnames or ip-addresses of the remote machines
-- **port** - port to connect to on the remote machines, defaults to `22`
+- **port** - default port to connect to on the remote machines, defaults to `22`
+- **ports** - use ports set different port for each remote machines, defaults to `port` or `22`
 - **source** - source folder to synchronize from, defaults to `./`
 - **target** - target folder on remote machines to synchronize to
 - **include** - rsync include filter
@@ -52,6 +53,11 @@ pipeline:
     hosts:
       - remote1
       - remote2
+      - remote3
+    port: 22
+    ports:
+      - 25
+      - 35
     source: ./dist
     target: ~/packages
     include:
@@ -66,7 +72,7 @@ pipeline:
     secrets: [ rsync_user, rsync_key ]
 ```
 
-The example above illustrates a situation where an app package (`app.tar.gz`) will be deployed to 2 remote hosts (`remote1` and `remote2`). An md5 checksum will be deployed as well. After deploying, the md5 checksum is used to check the deployed package. If successful the package is extracted.
+The example above illustrates a situation where an app package (`app.tar.gz`) will be deployed to 3 remote hosts (`remote1`, `remote2` and `remote3`) and using port `25`, `35`, `22`( Default port defines in `port`, `remote1` and `remote2` will use ports defined in `ports`). An md5 checksum will be deployed as well. After deploying, the md5 checksum is used to check the deployed package. If successful the package is extracted.
 
 ## Important
 The script passed to **script** will be executed on remote machines directly after rsync completes to deploy the files. It will be executed step by step until a command returns a non-zero exit-code. If this happens, the entire plugin will exit and fail the build.
